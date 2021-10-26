@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ball Game</title>
+    <script src="Ball.js"></script>
+</head>
+<body>
+<canvas id="my-game" width="800" height="600" style="background-color: #f5a707"></canvas>
+
+<script>
+    let canvas = document.getElementById('my-game');
+    let pen = canvas.getContext('2d');
+    let balls = [];
+
+    function createBall() {
+        for (let i = 0; i < 10; i++) {
+            let x = randomNumber(0, canvas.width);
+            let y = randomNumber(0, canvas.height);
+            let radius = randomNumber(10, 30);
+            let color = randomColor();
+            let speed = randomNumber(5,15);
+            let ball = new Ball(x, y, color, radius, speed);
+            ball.render(canvas);
+            balls.push(ball);
+        }
+    }
+
+    function moveBall(){
+        for (let i = 0; i < balls.length; i++) {
+            balls[i].move();
+            balls[i].render(canvas);
+            if(balls[i].x+balls[i].radius > canvas.width || balls[i].x-balls[i].radius < 0){
+                balls[i].xSpeed = -balls[i].xSpeed;
+            }
+
+            if(balls[i].y+balls[i].radius > canvas.height || balls[i].y-balls[i].radius < 0){
+                balls[i].ySpeed = -balls[i].ySpeed;
+            }
+        }
+    }
+
+    function main() {
+        pen.clearRect(0,0,canvas.width,canvas.height);
+        moveBall();
+        requestAnimationFrame(main);
+    }
+    main();
+
+    createBall();
+    // setInterval(main,60);
+
+
+    function randomNumber(min, max) {
+        let rand = Math.floor(Math.random() * (max - min)) + min;
+        return rand;
+    }
+
+    function randomColor() {
+        let r = randomNumber(0, 255);
+        let g = randomNumber(0, 255);
+        let b = randomNumber(0, 255);
+        let rgb = "rgb(" + r + "," + g + "," + b + ")";
+        // let rgb2 = `rgb(${r},${g},${b})`;
+        //rgb(100,200,150);
+        return rgb;
+    }
+
+
+</script>
+</body>
+</html>

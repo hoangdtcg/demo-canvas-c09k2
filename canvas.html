@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<canvas width="600" height="400" style="background-color: bisque" id="paper"></canvas>
+</body>
+<script>
+  let paper = document.getElementById("paper");
+  let pen = paper.getContext("2d");
+
+  function drawCircle(x,y) {
+    pen.beginPath();
+    pen.arc(x,y,50,0,2*Math.PI);
+    pen.strokeStyle = "red";
+    pen.fillStyle = "green";
+    pen.stroke();
+    pen.fill();
+    pen.closePath();
+  }
+
+  //FPS: Frame Per Second
+  let x = 100;
+  setInterval(function () {
+    pen.clearRect(0,0,paper.width,paper.height);
+    drawCircle(x,200);
+    drawCircle(x,100);
+    x+=5;
+  },60)
+
+
+
+  // pen.beginPath();
+  // pen.rect(300,300, 60, 30);
+  // pen.strokeStyle = "blue";
+  // pen.stroke();
+  // pen.closePath();
+</script>
+</html>
