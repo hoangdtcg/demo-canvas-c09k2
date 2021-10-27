@@ -23,6 +23,15 @@ class Ball {
         pen.closePath();
     }
 
+    renderImage(canvas){
+        let pen = canvas.getContext('2d');
+        let img = new Image();
+        img.src = "dragon.png";
+        pen.drawImage(img,this.x,this.y,this.radius,this.radius);
+        pen.beginPath();
+        pen.closePath();
+    }
+
     move(){
         this.x += this.xSpeed;
         this.y += this.ySpeed;

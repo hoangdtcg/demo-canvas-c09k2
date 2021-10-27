@@ -4,50 +4,68 @@
     <meta charset="UTF-8">
     <title>Ball Game</title>
     <script src="Ball.js"></script>
+    <script src="Player.js"></script>
 </head>
 <body>
-<canvas id="my-game" width="800" height="600" style="background-color: #f5a707"></canvas>
+<canvas id="my-game" width="800" height="600" style="background-color: #078ef5"></canvas>
 
 <script>
     let canvas = document.getElementById('my-game');
     let pen = canvas.getContext('2d');
     let balls = [];
+    let player = new Player(400, 300, "black", 50, 10);
 
     function createBall() {
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 1; i++) {
             let x = randomNumber(0, canvas.width);
             let y = randomNumber(0, canvas.height);
-            let radius = randomNumber(10, 30);
+            let radius = randomNumber(40, 70);
             let color = randomColor();
-            let speed = randomNumber(5,15);
+            let speed = randomNumber(5, 15);
             let ball = new Ball(x, y, color, radius, speed);
             ball.render(canvas);
             balls.push(ball);
         }
     }
 
-    function moveBall(){
+    function createNewBall() {
+        let x = randomNumber(0, canvas.width);
+        let y = randomNumber(0, canvas.height);
+        let radius = randomNumber(40, 70);
+        let color = randomColor();
+        let speed = randomNumber(5, 15);
+        let ball = new Ball(x, y, color, radius, speed);
+        ball.render(canvas);
+        balls.push(ball);
+    }
+
+    function moveBall() {
         for (let i = 0; i < balls.length; i++) {
             balls[i].move();
-            balls[i].render(canvas);
-            if(balls[i].x+balls[i].radius > canvas.width || balls[i].x-balls[i].radius < 0){
+            balls[i].renderImage(canvas);
+            if (balls[i].x + balls[i].radius > canvas.width || balls[i].x < 0) {
                 balls[i].xSpeed = -balls[i].xSpeed;
             }
 
-            if(balls[i].y+balls[i].radius > canvas.height || balls[i].y-balls[i].radius < 0){
+            if (balls[i].y + balls[i].radius > canvas.height || balls[i].y < 0) {
                 balls[i].ySpeed = -balls[i].ySpeed;
             }
         }
     }
 
     function main() {
-        pen.clearRect(0,0,canvas.width,canvas.height);
+        pen.clearRect(0, 0, canvas.width, canvas.height);
         moveBall();
+        player.move(canvas);
+        player.render(canvas);
+        checkAllCrash();
         requestAnimationFrame(main);
     }
+
     main();
 
     createBall();
+
     // setInterval(main,60);
 
 
@@ -65,6 +83,65 @@
         //rgb(100,200,150);
         return rgb;
     }
+
+
+    function controlPlayer(evt) {
+
+        switch (evt.key) {
+            case "a":
+            case "ArrowLeft":
+                player.direction = "left";
+                break;
+            case "d":
+            case "ArrowRight":
+                player.direction = "right";
+                break;
+            case "w":
+            case "ArrowUp":
+                player.direction = "up";
+                break;
+            case "s":
+            case "ArrowDown":
+                player.direction = "down";
+                break;
+            default:
+                player.direction = "";
+        }
+    }
+
+    window.addEventListener("keydown", controlPlayer)
+
+    //check va cham giua 2 object
+    function checkCrash(player,ball) {
+        let top1 = player.y;
+        let bottom1 = player.y + player.size;
+        let left1 = player.x;
+        let right1 = player.x + player.size;
+
+        let left2 = ball.x;
+        let right2 = ball.x + ball.radius;
+        let top2 = ball.y;
+        let bottom2 = ball.y + ball.radius;
+        if(top1 > bottom2 || left1 > right2 || right1 < left2 || bottom1 < top2){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    //check va cham giua player va cac qua ball
+    function checkAllCrash() {
+        for (let i = 0; i < balls.length; i++) {
+            if(checkCrash(player,balls[i])){
+                player.size += 5;
+                balls.splice(i,1);
+                i--;
+                // createNewBall();
+            }
+        }
+    }
+
+    setInterval(createNewBall, 200);
 
 
 </script>
